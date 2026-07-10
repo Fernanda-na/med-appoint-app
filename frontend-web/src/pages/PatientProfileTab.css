@@ -1,0 +1,145 @@
+/* PatientProfileTab.css */
+.patient-profile-wrapper {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.profile-header {
+  margin-bottom: 24px;
+}
+
+.profile-header h3 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.profile-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: rgba(14, 165, 233, 0.2);
+}
+
+.profile-card h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Form Styles */
+.profile-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .profile-form .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-actions {
+  margin-top: 32px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Avatar Sidebar */
+.avatar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+}
+
+.avatar-display {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.avatar-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 700;
+  box-shadow: 0 12px 32px rgba(14, 165, 233, 0.25);
+  border: 4px solid #ffffff;
+}
+
+.avatar-image {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 4px solid var(--primary);
+  box-shadow: 0 12px 32px rgba(14, 165, 233, 0.25);
+}
+
+.avatar-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.file-input {
+  font-size: 14px;
+  padding: 8px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  cursor: pointer;
+  width: 100%;
+}
+
+.file-input::file-selector-button {
+  background: var(--bg-input);
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  cursor: pointer;
+  font-weight: 500;
+  margin-right: 12px;
+  transition: var(--transition);
+}
+
+.file-input::file-selector-button:hover {
+  background: var(--border);
+}
+
+.w-full {
+  width: 100%;
+}

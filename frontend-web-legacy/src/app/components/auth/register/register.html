@@ -1,0 +1,54 @@
+<div class="auth-container">
+  <div class="glass-card">
+    <div class="header">
+      <div class="logo">
+        <span class="icon">🏥</span>
+        <h1>MedAppoint</h1>
+      </div>
+      <p>Créez votre compte pour commencer.</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+      <div class="row">
+        <div class="form-group">
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" name="nom" [(ngModel)]="user.nom" required placeholder="Doe" />
+        </div>
+        <div class="form-group">
+          <label for="prenom">Prénom</label>
+          <input type="text" id="prenom" name="prenom" [(ngModel)]="user.prenom" required placeholder="John" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" [(ngModel)]="user.email" required email placeholder="john@example.com" />
+      </div>
+
+      <div class="form-group">
+        <label for="role">Je suis un...</label>
+        <select id="role" name="role" [(ngModel)]="user.role" required>
+          <option *ngFor="let role of roles" [value]="role.value">{{ role.label }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" [(ngModel)]="user.password" required minlength="6" placeholder="••••••••" />
+      </div>
+
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <button type="submit" [disabled]="!registerForm.form.valid || loading" class="submit-btn" [class.loading]="loading">
+        <span *ngIf="!loading">S'Inscrire</span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+
+      <div class="footer">
+        <p>Déjà un compte ? <a routerLink="/login">Connectez-vous</a></p>
+      </div>
+    </form>
+  </div>
+</div>

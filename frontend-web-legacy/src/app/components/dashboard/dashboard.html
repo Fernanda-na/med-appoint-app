@@ -1,0 +1,76 @@
+<div class="dashboard-wrapper">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="icon">🏥</span>
+      <span class="name">MedAppoint</span>
+    </div>
+
+    <nav class="menu">
+      <a (click)="activeTab = 'dashboard'" [class.active]="activeTab === 'dashboard'">
+        <span class="icon">📊</span>
+        <span>Tableau de bord</span>
+      </a>
+      <a *ngIf="user?.role === 'PATIENT'" (click)="activeTab = 'search'" [class.active]="activeTab === 'search'">
+        <span class="icon">🔍</span>
+        <span>Trouver un docteur</span>
+      </a>
+      <a (click)="activeTab = 'messages'" [class.active]="activeTab === 'messages'">
+        <span class="icon">🔔</span>
+        <span>Notifications</span>
+      </a>
+      <a (click)="activeTab = 'chat'" [class.active]="activeTab === 'chat'">
+        <span class="icon">✉️</span>
+        <span>Messagerie</span>
+      </a>
+      <a (click)="activeTab = 'settings'" [class.active]="activeTab === 'settings'">
+        <span class="icon">⚙️</span>
+        <span>Paramètres</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button (click)="logout()" class="logout-btn">
+        <span class="icon">🚪</span>
+        <span>Déconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="top-bar">
+      <div class="search-box">
+        <input type="text" placeholder="Rechercher..." />
+      </div>
+
+      <div class="user-profile">
+        <div class="info">
+          <span class="name">{{ user?.prenom }} {{ user?.nom }}</span>
+          <span class="role">{{ user?.role }}</span>
+        </div>
+        <div class="avatar">
+          {{ user?.prenom?.charAt(0) }}{{ user?.nom?.charAt(0) }}
+        </div>
+      </div>
+    </header>
+
+    <div class="content-area">
+      <!-- Shared Navigation Views -->
+      <app-profile-settings *ngIf="activeTab === 'settings'"></app-profile-settings>
+      <app-notification-center *ngIf="activeTab === 'messages'"></app-notification-center>
+      <app-chat *ngIf="activeTab === 'chat'"></app-chat>
+
+      <!-- Patient Specific Views -->
+      <ng-container *ngIf="user?.role === 'PATIENT' && !['settings', 'messages', 'chat'].includes(activeTab)">
+        <app-patient-dashboard *ngIf="activeTab === 'dashboard'"></app-patient-dashboard>
+        <app-doctor-search *ngIf="activeTab === 'search'"></app-doctor-search>
+      </ng-container>
+
+      <!-- Doctor Specific Views -->
+      <ng-container *ngIf="user?.role === 'MEDECIN' && !['settings', 'messages', 'chat'].includes(activeTab)">
+        <app-medecin-dashboard *ngIf="activeTab === 'dashboard'"></app-medecin-dashboard>
+      </ng-container>
+    </div>
+  </main>
+</div>

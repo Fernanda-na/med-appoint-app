@@ -1,0 +1,55 @@
+<div class="auth-container">
+  <div class="glass-card">
+    <div class="header">
+      <div class="logo">
+        <span class="icon">🏥</span>
+        <h1>MedAppoint</h1>
+      </div>
+      <p>Bienvenue. Connectez-vous à votre espace.</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-wrapper">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="credentials.email"
+            required
+            email
+            placeholder="votre@email.com"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <div class="input-wrapper">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            [(ngModel)]="credentials.password"
+            required
+            placeholder="••••••••"
+          />
+        </div>
+      </div>
+
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <button type="submit" [disabled]="!loginForm.form.valid || loading" class="submit-btn" [class.loading]="loading">
+        <span *ngIf="!loading">Se Connecter</span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+
+      <div class="footer">
+        <p>Pas encore de compte ? <a routerLink="/register">Inscrivez-vous</a></p>
+      </div>
+    </form>
+  </div>
+</div>

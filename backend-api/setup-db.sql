@@ -1,0 +1,1 @@
+CREATE DATABASE IF NOT EXISTS med_appoint_db;

@@ -1,0 +1,62 @@
+<div class="medecin-dashboard">
+  <div class="welcome-banner">
+    <div class="text">
+      <h2>Bonjour Docteur,</h2>
+      <p>Vous avez {{ appointments.length }} rendez-vous prévus aujourd'hui.</p>
+    </div>
+    <div class="action">
+      <button class="availability-btn">Gérer mes disponibilités</button>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Left Column: Appointments -->
+    <section class="appointments-list">
+      <div class="section-header">
+        <h3>Calendrier du jour</h3>
+        <span class="date">{{ today | date:'dd MMMM yyyy' }}</span>
+      </div>
+
+      <div class="timeline">
+        <div *ngFor="let app of appointments" class="timeline-item">
+          <div class="time">{{ app.dateHeureDebut | date:'HH:mm' }}</div>
+          <div class="appointment-card" [class.active]="app.statut === 'EN_COURS'">
+            <div class="card-header">
+              <span class="patient-name">{{ app.patientNom }}</span>
+              <span class="status-dot" [class]="app.statut.toLowerCase()"></span>
+            </div>
+            <p class="motif">{{ app.motif }}</p>
+            <div class="card-footer">
+              <button class="btn-sm secondary">Détails</button>
+              <button class="btn-sm primary" *ngIf="app.statut === 'VALIDE'">Démarrer</button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="appointments.length === 0" class="empty-state">
+          <p>Aucun rendez-vous pour aujourd'hui.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Stats & Quick Actions -->
+    <aside class="sidebar-stats">
+      <div class="stat-box">
+        <h4>Patients du jour</h4>
+        <span class="number">{{ appointments.length }}</span>
+      </div>
+      
+      <div class="stat-box">
+        <h4>Temps moyen / RDV</h4>
+        <span class="number">20 min</span>
+      </div>
+
+      <div class="quick-actions">
+        <h4>Actions rapides</h4>
+        <button class="action-item">📝 Rédiger une ordonnance</button>
+        <button class="action-item">🔍 Chercher un patient</button>
+        <button class="action-item">📊 Consulter les stats</button>
+      </div>
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="patient-dashboard">
+  <div class="summary-cards">
+    <div class="card pulse">
+      <div class="icon-bg blue">📅</div>
+      <div class="info">
+        <h3>Prochain RDV</h3>
+        <p *ngIf="appointments.length > 0">{{ appointments[0].dateHeureDebut | date:'fullDate' }}</p>
+        <p *ngIf="appointments.length === 0">Aucun</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="icon-bg green">👨‍⚕️</div>
+      <div class="info">
+        <h3>Médecins consultés</h3>
+        <p>3 praticiens</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="icon-bg purple">📄</div>
+      <div class="info">
+        <h3>Ordonnances</h3>
+        <p>12 documents</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="appointments-section">
+    <div class="section-header">
+      <h2>Mes Rendez-vous</h2>
+      <button class="new-rdv-btn">+ Nouveau RDV</button>
+    </div>
+
+    <div class="table-container">
+      <table *ngIf="!loading && appointments.length > 0">
+        <thead>
+          <tr>
+            <th>Médecin</th>
+            <th>Spécialité</th>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Statut</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let app of appointments">
+            <td>
+              <div class="medecin-info">
+                <span class="avatar-sm">{{ app.medecinNom.charAt(4) }}</span>
+                <span>{{ app.medecinNom }}</span>
+              </div>
+            </td>
+            <td>{{ app.specialite }}</td>
+            <td>{{ app.dateHeureDebut | date:'dd MMM yyyy' }}</td>
+            <td>{{ app.dateHeureDebut | date:'HH:mm' }}</td>
+            <td>
+              <span class="status-tag" [class]="app.statut.toLowerCase()">
+                {{ app.statut }}
+              </span>
+            </td>
+            <td>
+              <button class="action-btn">Voir</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="!loading && appointments.length === 0" class="empty-state">
+        <p>Vous n'avez pas encore de rendez-vous prévus.</p>
+        <button class="primary-btn">Prendre un rendez-vous</button>
+      </div>
+
+      <div *ngIf="loading" class="loader-container">
+        <div class="shimmer-row" *ngFor="let i of [1,2,3]"></div>
+      </div>
+    </div>
+  </section>
+</div>

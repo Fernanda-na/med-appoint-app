@@ -1,0 +1,217 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  PATIENT
+  MEDECIN
+  ADMINISTRATEUR
+  RECEPTIONNISTE
+}
+
+enum StatutRdv {
+  EN_ATTENTE
+  VALIDE
+  REFUSE
+  ANNULE
+}
+
+enum StatutTeleconsultation {
+  PLANIFIEE
+  EN_COURS
+  TERMINEE
+  ANNULEE
+}
+
+enum StatutPaiement {
+  EN_ATTENTE
+  PAYE
+  REFUSE
+  REMBOURSE
+}
+
+model User {
+  id               Int            @id @default(autoincrement())
+  nom              String
+  prenom           String
+  email            String         @unique
+  motDePasse       String
+  telephone        String?
+  role             Role           @default(PATIENT)
+  avatarUrl        String?
+  patient          Patient?
+  medecin          Medecin?
+  notifications    Notification[]
+  sentMessages     ChatMessage[]  @relation("SentMessages")
+  receivedMessages ChatMessage[]  @relation("ReceivedMessages")
+
+  @@map("utilisateurs")
+}
+
+model Patient {
+  id                Int                  @id @default(autoincrement())
+  userId            Int                  @unique
+  user              User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  numeroPatient     String
+  historiqueMedical String?              @db.Text
+  appointments      RendezVous[]
+  documents         DocumentMedical[]
+  teleconsultations Teleconsultation[]
+  prescriptions     Prescription[]
+  paiements         Paiement[]
+  avis              Avis[]
+
+  @@map("patients")
+}
+
+model Medecin {
+  id               Int                  @id @default(autoincrement())
+  userId           Int                  @unique
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lieuConsultation String?
+  specialiteId     Int?
+  specialite       Specialite?          @relation(fields: [specialiteId], references: [id])
+  appointments     RendezVous[]
+  availabilities   Disponibilite[]
+  teleconsultations Teleconsultation[]
+  prescriptions    Prescription[]
+  avis             Avis[]
+
+  @@map("medecins")
+}
+
+model Specialite {
+  id          Int       @id @default(autoincrement())
+  nom         String    @unique
+  description String?   @db.Text
+  medecins    Medecin[]
+
+  @@map("specialites")
+}
+
+model RendezVous {
+  id             Int       @id @default(autoincrement())
+  patientId      Int
+  patient        Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  medecinId      Int
+  medecin        Medecin   @relation(fields: [medecinId], references: [id], onDelete: Cascade)
+  dateHeureDebut DateTime
+  dateHeureFin   DateTime
+  motif          String
+  statut         StatutRdv @default(EN_ATTENTE)
+  notesMedecin   String?   @db.Text
+  paiement       Paiement?
+
+  @@map("rendez_vous")
+}
+
+model Disponibilite {
+  id          Int     @id @default(autoincrement())
+  medecinId   Int
+  medecin     Medecin @relation(fields: [medecinId], references: [id], onDelete: Cascade)
+  jourSemaine String // e.g. LUNDI, MARDI
+  heureDebut  String // HH:mm format
+  heureFin    String // HH:mm format
+
+  @@map("disponibilites")
+}
+
+model DocumentMedical {
+  id         Int      @id @default(autoincrement())
+  nom        String
+  type       String
+  url        String
+  dateUpload DateTime @default(now())
+  patientId  Int
+  patient    Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("documents_medicaux")
+}
+
+model Notification {
+  id           Int      @id @default(autoincrement())
+  titre        String
+  message      String   @db.Text
+  dateCreation DateTime @default(now())
+  lu           Boolean  @default(false)
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model ChatMessage {
+  id             Int      @id @default(autoincrement())
+  contenu        String   @db.Text
+  dateEnvoi      DateTime @default(now())
+  expediteurId   Int
+  expediteur     User     @relation("SentMessages", fields: [expediteurId], references: [id], onDelete: Cascade)
+  destinataireId Int
+  destinataire   User     @relation("ReceivedMessages", fields: [destinataireId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model Teleconsultation {
+  id          Int                  @id @default(autoincrement())
+  medecinId   Int
+  medecin     Medecin              @relation(fields: [medecinId], references: [id], onDelete: Cascade)
+  patientId   Int
+  patient     Patient              @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  dateHeure   DateTime
+  motif       String               @db.Text
+  statut      StatutTeleconsultation @default(PLANIFIEE)
+  lienVideo   String?
+  duree       Int?                 // en minutes
+  notesMedecin String?             @db.Text
+
+  @@map("teleconsultations")
+}
+
+model Prescription {
+  id          Int       @id @default(autoincrement())
+  medecinId   Int
+  medecin     Medecin   @relation(fields: [medecinId], references: [id], onDelete: Cascade)
+  patientId   Int
+  patient     Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  datePrescription DateTime @default(now())
+  medicaments String    @db.Text
+  posologie   String    @db.Text
+  instructions String   @db.Text
+  valide      Boolean   @default(true)
+
+  @@map("prescriptions")
+}
+
+model Paiement {
+  id          Int         @id @default(autoincrement())
+  rendezVousId Int?       @unique
+  rendezVous  RendezVous? @relation(fields: [rendezVousId], references: [id])
+  patientId   Int
+  patient     Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  montant     Float
+  datePaiement DateTime  @default(now())
+  methode     String      // CARTE, MOBILE_MONEY, ESPECES
+  statut      StatutPaiement @default(EN_ATTENTE)
+  reference   String?     @unique
+
+  @@map("paiements")
+}
+
+model Avis {
+  id          Int      @id @default(autoincrement())
+  medecinId   Int
+  medecin     Medecin  @relation(fields: [medecinId], references: [id], onDelete: Cascade)
+  patientId   Int
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  note        Int      // 1-5
+  commentaire String?  @db.Text
+  dateAvis    DateTime @default(now())
+
+  @@map("avis")
+}

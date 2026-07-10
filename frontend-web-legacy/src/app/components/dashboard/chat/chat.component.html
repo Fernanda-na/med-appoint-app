@@ -1,0 +1,42 @@
+<div class="chat-container">
+  <div class="contacts-sidebar">
+    <h3>Discussions</h3>
+    <div class="contact-item active">
+      <div class="avatar-sm">DR</div>
+      <div class="contact-info">
+        <span class="contact-name">Dr. Test</span>
+        <span class="last-msg">En ligne</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-window">
+    <div class="chat-header">
+      <div class="avatar-md">DR</div>
+      <div class="header-info">
+        <h3>Dr. Test</h3>
+        <span class="status-online">● En ligne</span>
+      </div>
+    </div>
+
+    <div class="messages-area" #scrollContainer>
+      <div *ngFor="let msg of messages" class="message-wrapper" [class.sent]="msg.expediteurEmail === user?.email">
+        <div class="message-bubble">
+          {{ msg.contenu }}
+          <span class="msg-date">{{ msg.dateEnvoi | date:'HH:mm' }}</span>
+        </div>
+      </div>
+      
+      <div *ngIf="messages.length === 0" class="empty-chat">
+        <p>Démarrez la conversation avec votre praticien.</p>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Votre message..." />
+      <button (click)="sendMessage()" [disabled]="!newMessage.trim()">
+        <span class="icon">✈️</span>
+      </button>
+    </div>
+  </div>
+</div>

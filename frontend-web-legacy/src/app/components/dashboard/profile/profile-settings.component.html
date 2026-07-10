@@ -1,0 +1,54 @@
+<div class="profile-settings">
+  <div class="header">
+    <h2>Paramètres du Profil</h2>
+    <p>Gérez vos informations personnelles et votre compte.</p>
+  </div>
+
+  <div class="profile-card">
+    <div class="avatar-section">
+      <div class="avatar-container" [class.loading]="uploading">
+        <img *ngIf="user?.avatarUrl" [src]="'http://localhost:8081/uploads/' + user.avatarUrl" alt="Avatar" />
+        <div *ngIf="!user?.avatarUrl" class="avatar-placeholder">
+          {{ user?.prenom?.charAt(0) }}{{ user?.nom?.charAt(0) }}
+        </div>
+        <div *ngIf="uploading" class="upload-overlay">
+          <div class="spinner"></div>
+        </div>
+      </div>
+      <div class="avatar-actions">
+        <label for="avatar-upload" class="upload-btn">
+          <span>📸 Modifier la photo</span>
+          <input id="avatar-upload" type="file" (change)="onFileSelected($event)" accept="image/*" hidden />
+        </label>
+        <p class="hint">JPG, PNG ou GIF. Max 2MB.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nom</label>
+        <input type="text" [value]="user?.nom" readonly />
+      </div>
+      <div class="form-group">
+        <label>Prénom</label>
+        <input type="text" [value]="user?.prenom" readonly />
+      </div>
+      <div class="form-group">
+        <label>Rôle</label>
+        <input type="text" [value]="user?.role" readonly class="role-badge" />
+      </div>
+      <div class="form-group">
+        <label>Adresse E-mail</label>
+        <input type="email" value="utilisateur@exemple.com" readonly />
+      </div>
+    </div>
+  </div>
+
+  <div class="danger-zone">
+    <h3>Zone Critique</h3>
+    <p>Ces actions sont irréversibles et impactent votre compte.</p>
+    <button class="delete-btn">Désactiver mon compte</button>
+  </div>
+</div>

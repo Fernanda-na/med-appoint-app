@@ -1,0 +1,31 @@
+<div class="notification-center">
+  <div class="header">
+    <h2>Notifications</h2>
+    <p>Restez informé de l'état de vos rendez-vous et messages.</p>
+  </div>
+
+  <div class="notification-list" *ngIf="!loading">
+    <div *ngFor="let notif of notifications" class="notification-item" [class.unread]="!notif.lu">
+      <div class="status-indicator"></div>
+      <div class="content">
+        <div class="notif-header">
+          <span class="title">{{ notif.titre }}</span>
+          <span class="date">{{ notif.dateCreation | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <p class="message">{{ notif.message }}</p>
+      </div>
+      <button *ngIf="!notif.lu" class="read-btn" (click)="markAsRead(notif.id)">
+        Marquer comme lu
+      </button>
+    </div>
+
+    <div *ngIf="notifications.length === 0" class="empty-state">
+      <div class="icon">🔔</div>
+      <p>Aucune notification pour le moment.</p>
+    </div>
+  </div>
+
+  <div class="shimmer-container" *ngIf="loading">
+    <div class="shimmer-item" *ngFor="let i of [1,2,3]"></div>
+  </div>
+</div>

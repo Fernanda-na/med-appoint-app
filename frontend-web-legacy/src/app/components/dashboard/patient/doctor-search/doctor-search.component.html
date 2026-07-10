@@ -1,0 +1,78 @@
+<div class="search-container">
+  <div class="filter-header">
+    <h2>Rechercher un Praticien</h2>
+    <div class="search-controls">
+      <div class="select-wrapper">
+        <select [(ngModel)]="selectedSpecialty" (change)="search()">
+          <option value="">Toutes les spécialités</option>
+          <option *ngFor="let s of specialties" [value]="s.nom">{{ s.nom }}</option>
+        </select>
+      </div>
+      <button class="search-btn" (click)="search()" [disabled]="loading">
+        <span *ngIf="!loading">Rechercher</span>
+        <span *ngIf="loading" class="spinner-sm"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="results-grid">
+    <div *ngFor="let doctor of doctors" class="doctor-card">
+      <div class="doctor-header">
+        <div class="avatar-lg">{{ doctor.prenom.charAt(0) }}{{ doctor.nom.charAt(0) }}</div>
+        <div class="info">
+          <h3>Dr. {{ doctor.prenom }} {{ doctor.nom }}</h3>
+          <span class="specialty-tag">{{ doctor.specialite?.nom || 'Généraliste' }}</span>
+        </div>
+      </div>
+      <div class="doctor-body">
+        <p class="location">📍 {{ doctor.lieuConsultation }}</p>
+      </div>
+      <div class="doctor-footer">
+        <button class="book-btn" (click)="openBooking(doctor)">Prendre RDV</button>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && doctors.length === 0" class="no-results">
+      <p>Aucun médecin trouvé pour cette recherche.</p>
+    </div>
+
+    <div *ngIf="loading" class="loading-grid">
+      <div class="shimmer-card" *ngFor="let i of [1,2,3,4]"></div>
+    </div>
+  </div>
+
+  <!-- Booking Modal -->
+  <div class="modal-overlay" *ngIf="bookingDoctor">
+    <div class="modal-card">
+      <button class="close-btn" (click)="bookingDoctor = null">×</button>
+      
+      <div *ngIf="!bookingSuccess">
+        <h2>Prendre rendez-vous</h2>
+        <p class="doctor-name">Dr. {{ bookingDoctor.prenom }} {{ bookingDoctor.nom }}</p>
+        
+        <div class="modal-form">
+          <div class="form-group">
+            <label>Date et Heure</label>
+            <input type="datetime-local" [(ngModel)]="bookingDate" />
+          </div>
+          
+          <div class="form-group">
+            <label>Motif de consultation</label>
+            <textarea [(ngModel)]="bookingMotif" placeholder="Expliquez brièvement l'objet de votre visite..."></textarea>
+          </div>
+          
+          <button class="confirm-btn" (click)="confirmBooking()" [disabled]="bookingLoading || !bookingDate">
+            <span *ngIf="!bookingLoading">Confirmer la demande</span>
+            <span *ngIf="bookingLoading" class="spinner"></span>
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="bookingSuccess" class="success-state">
+        <div class="success-icon">✅</div>
+        <h2>Demande Envoyée !</h2>
+        <p>Votre demande de rendez-vous a bien été transmise au médecin.</p>
+      </div>
+    </div>
+  </div>
+</div>
